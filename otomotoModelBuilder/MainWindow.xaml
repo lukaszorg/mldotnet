@@ -7,11 +7,12 @@
         xmlns:otomotoModelBuilder="clr-namespace:OtomotoModelBuilder"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="OtoMoto Model Builder" Height="800" Width="800">
+        Title="OtoMoto" Height="800" Width="800">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -46,9 +47,46 @@
 
         <xctk:PropertyGrid Grid.Column="1" Grid.Row="0" x:Name="Editor" />
 
-        <TextBox IsEnabled="False" x:Name="ModelMetricsTextbox" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap" />
+        <TextBox IsEnabled="False" x:Name="ModelMetricsTextbox" Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" TextWrapping="Wrap" />
 
-        <Button Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="2" VerticalAlignment="Bottom" HorizontalAlignment="Center" Content="Generate Model" Margin="30" Padding="10,5" Click="Button_Click" x:Name="GenerateButton" />
+        <Button Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="1" VerticalAlignment="Bottom" HorizontalAlignment="Center" Content="Generate Model" Margin="30" Padding="10,5" Click="Button_Click" x:Name="GenerateButton" />
 
+        <Grid Grid.Row="3" Grid.ColumnSpan="2" Margin="30,0" x:Name="PredictPanel" Visibility="Hidden">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="Make:" Grid.Row="0" Grid.Column="0" Width="100" HorizontalAlignment="Left"/>
+            <TextBox  Margin="110,0,0,0" x:Name="tbMake" Width="100" HorizontalAlignment="Left" Text="Opel"/>
+
+
+            <TextBlock Text="Model:" Grid.Column="1"  Width="100" HorizontalAlignment="Left" />
+            <TextBox Margin="110,0,0,0" x:Name="tbModel" Grid.Column="1" Width="100" HorizontalAlignment="Left" Text="Insignia A"/>
+
+            <TextBlock Text="Year:" Grid.Row="1" Grid.Column="0" Width="100" HorizontalAlignment="Left" />
+            <TextBox Margin="110,0,0,0" x:Name="tbYear" Grid.Row="1" Grid.Column="0" Width="100" HorizontalAlignment="Left" Text="2014"/>
+
+            <TextBlock Text="Mileage:" Grid.Row="1" Grid.Column="1" Width="100"  HorizontalAlignment="Left"/>
+            <TextBox Margin="110,0,0,0" x:Name="tbMileage" Grid.Row="1" Grid.Column="1" Width="100" HorizontalAlignment="Left" Text="150000"/>
+
+            <TextBlock Text="Engine Size:" Grid.Row="2" Grid.Column="0" Width="120" HorizontalAlignment="Left"/>
+            <TextBox Margin="110,0,0,0" x:Name="tbEngine" Grid.Row="2" Grid.Column="0" Width="100" HorizontalAlignment="Left" Text="2000"/>
+
+            <TextBlock Text="Fuel Type" Grid.Row="2" Grid.Column="1" Width="100" HorizontalAlignment="Left" />
+            <ComboBox ItemsSource="{Binding FuelTypes}" Margin="110,0,0,0" x:Name="tbFuel" Grid.Row="2" Grid.Column="1" Width="100" HorizontalAlignment="Left" />
+
+            <Button Grid.Row="3" Grid.ColumnSpan="2" VerticalAlignment="Center" Content="Predict Price" Click="PredictPriceClick"/>
+
+            <TextBlock Text="Predicted Price:" Grid.Row="4" HorizontalAlignment="Left" />
+            <TextBlock x:Name="tbPredictedPrice" Grid.Row="4" HorizontalAlignment="Left" Margin="100,0" />
+        </Grid>
     </Grid>
 </Window>

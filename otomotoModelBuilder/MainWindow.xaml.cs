@@ -2,6 +2,8 @@
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using LinearRegressionML.Model.DataModels;
+using Microsoft.ML;
 using Microsoft.ML.Data;
 using Microsoft.ML.Trainers.LightGbm;
 using OtomotoModelBuilder;
@@ -14,6 +16,14 @@ namespace otomotoModelBuilder
         private readonly List<ColumnTransform> _numberNormalization = new List<ColumnTransform>() { ColumnTransform.NormalizeMeanVariance, ColumnTransform.NormalizeMinMax, ColumnTransform.None };
         public ColumnModel[] Columns { get; set; }
         private LightGbmRegressionTrainerOptions trainerOptions = new LightGbmRegressionTrainerOptions();
+        private ITransformer _model;
+
+        public List<string> FuelTypes { get; } = new List<string>()
+        {
+            "Diesel",
+            "Benzyna",
+            "Benzyna+LPG",
+        };
 
         public MainWindow()
         {
@@ -22,8 +32,6 @@ namespace otomotoModelBuilder
 
             DataContext = this;
             Editor.SelectedObject = trainerOptions;
-
-
         }
 
         private void Initialize()
@@ -46,11 +54,12 @@ namespace otomotoModelBuilder
             ModelMetricsTextbox.Text = "Generating model..";
             var b = await Task.Run(() =>
             {
-                var model = ModelBuilder.CreateModel(Columns, trainerOptions);
-                return  ModelBuilder.GetMetrics(model);
+                _model = ModelBuilder.CreateModel(Columns, trainerOptions);
+                return  ModelBuilder.GetMetrics(_model);
             });
 
             PrintRegressionMetrics(b);
+            PredictPanel.Visibility = Visibility.Visible;
             GenerateButton.IsEnabled = true;
 
         }
@@ -71,5 +80,22 @@ namespace otomotoModelBuilder
             ModelMetricsTextbox.Text = sb.ToString();
         }
 
+        private void PredictPriceClick(object sender, RoutedEventArgs e)
+        {
+            var predFunction = ModelBuilder.GetPredictFunction(_model);
+            var carData = new CarModel
+            {
+                Make = tbMake.Text,
+                Model = tbModel.Text,
+                Year = float.Parse(tbYear.Text),
+                Mileage = float.Parse(tbMileage.Text),
+                Engine = float.Parse(tbEngine.Text),
+                Fuel = (string) tbFuel.SelectedItem
+            };
+
+            var result =  predFunction.Predict(carData);
+
+            tbPredictedPrice.Text = result.price.ToString("#") + " PLN";
+        }
     }
 }

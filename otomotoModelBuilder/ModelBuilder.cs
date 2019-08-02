@@ -164,5 +164,16 @@ namespace otomotoModelBuilder
             Debug.WriteLine($"*       Average R-squared:     {R2.Average():0.###}  ");
             Debug.WriteLine($"*************************************************************************************************************");
         }
+
+        public static PredictionEngine<CarModel, PricePrediction> GetPredictFunction(ITransformer model)
+        {
+            return mlContext.Model.CreatePredictionEngine<CarModel, PricePrediction>(model);
+        }
+    }
+
+    public class PricePrediction
+    {
+        [ColumnName("Score")]
+        public float price;
     }
 }
